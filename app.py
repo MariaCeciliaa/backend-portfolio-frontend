@@ -2,19 +2,17 @@ from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv
 import os
-from flask_cors import CORS
+from flask_cors import CORS 
 
 load_dotenv()
 
 app = Flask(__name__)
-
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-
+CORS(app)
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 
 @app.route('/api/github/repos', methods=['GET'])
 def get_repos():
-    username = request.args.get('username')  
+    username = request.args.get('username')
     headers = {'Authorization': f'token {GITHUB_TOKEN}'}
     
     if not username:
@@ -42,6 +40,6 @@ def get_repo_languages(repo_name):
 
     return jsonify(response.json())
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
